@@ -1,0 +1,9 @@
+# Python
+*.pyc
+*.pyo
+
+# OS X
+.DS_Store
+
+# Local settings
+settings.py
