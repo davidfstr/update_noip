@@ -4,7 +4,8 @@ Refreshes all your hostnames on [noip.com].
 
 If run regularly, no-ip won't nag you to update your hostnames every 30 days.
 
-This script is intended to be hooked up to cron or some other periodic task scheduler. It reports execution errors via [notifymail].
+This script is intended to be hooked up to cron or some other periodic task scheduler. 
+It reports execution errors via [notifymail].
 
 [noip.com]: https://www.noip.com/
 [notifymail]: https://github.com/davidfstr/notifymail
