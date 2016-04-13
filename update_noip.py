@@ -2,7 +2,7 @@
 
 import notifymail
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, StaleElementReferenceException
 from selenium.webdriver.support.wait import WebDriverWait
 import sys
 import traceback
@@ -63,6 +63,8 @@ def go():
                         return False
                     else:
                         raise
+                except StaleElementReferenceException:
+                    return False
             
             update_hostname_button = WebDriverWait(browser, 3).until(
                 lambda _: click_modify_host_button(),
