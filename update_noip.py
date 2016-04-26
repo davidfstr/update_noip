@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import notifymail
+import os.path
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException, StaleElementReferenceException
 from selenium.webdriver.support.wait import WebDriverWait
@@ -66,7 +67,8 @@ def go():
                 except StaleElementReferenceException:
                     return False
             
-            update_hostname_button = WebDriverWait(browser, 3).until(
+            # NOTE: 3 seconds didn't seem to be enough time
+            update_hostname_button = WebDriverWait(browser, 6).until(
                 lambda _: click_modify_host_button(),
                 'Could not click "Modify Host" button.')
             
@@ -86,6 +88,12 @@ def go():
     try:
         login()
         update_hosts()
+    except:
+        # Try to save screenshot of the problem
+        if os.path.exists('/tmp'):
+            browser.get_screenshot_as_file('/tmp/update_noip.png')
+        
+        raise
     finally:
         browser.quit()
 
