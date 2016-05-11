@@ -3,7 +3,8 @@
 import notifymail
 import os.path
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException, StaleElementReferenceException
+from selenium.common.exceptions import \
+    WebDriverException, StaleElementReferenceException, TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 import sys
 import traceback
@@ -14,6 +15,9 @@ except ImportError:
     raise ImportError(
         'You must create a "settings.py" file based on "settings.example.py" ' +
         'and fill in your no-ip username and password.')
+
+# Useful to temporarily set to True for debugging purposes.
+KEEP_BROWSER_OPEN = False
 
 def go():
     browser = webdriver.Firefox()
@@ -59,13 +63,13 @@ def go():
                     modify_host_button = find_modify_host_buttons()[i]  # refresh
                     modify_host_button.click()
                     return True
+                except StaleElementReferenceException:
+                    return False
                 except WebDriverException as e:
                     if 'Element is not clickable' in str(e):
                         return False
                     else:
                         raise
-                except StaleElementReferenceException:
-                    return False
             
             # NOTE: 3 seconds didn't seem to be enough time
             update_hostname_button = WebDriverWait(browser, 6).until(
@@ -84,18 +88,36 @@ def go():
                 lambda _: find_update_hostname_button(),
                 'Could not find unique "Update Hostname" button.')
             update_hostname_button.click()
-
+            
+            # HACK: Sometimes the "Update Hostname" button
+            #       fails to register the click...
+            try:
+                WebDriverWait(browser, 6).until(
+                    lambda _: not find_update_hostname_button())
+            except TimeoutException:
+                # ...so try again in that situation
+                find_update_hostname_button().click()
+                
+                WebDriverWait(browser, 6).until(
+                    lambda _: not find_update_hostname_button())
+    
     try:
         login()
         update_hosts()
-    except:
+        if KEEP_BROWSER_OPEN:
+            browser.quit()
+    except Exception as e:
         # Try to save screenshot of the problem
         if os.path.exists('/tmp'):
-            browser.get_screenshot_as_file('/tmp/update_noip.png')
+            try:
+                browser.get_screenshot_as_file('/tmp/update_noip.png')
+            except:
+                pass  # swallow, to avoid clobbering the original exception
         
-        raise
+        raise e
     finally:
-        browser.quit()
+        if not KEEP_BROWSER_OPEN:
+            browser.quit()
 
 test = '--test' in sys.argv
 try:
