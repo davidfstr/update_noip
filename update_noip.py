@@ -20,7 +20,7 @@ except ImportError:
 KEEP_BROWSER_OPEN = False
 
 def go():
-    browser = webdriver.Firefox()
+    browser = webdriver.Chrome()
 
     def login():
         browser.get('https://www.noip.com/login')
