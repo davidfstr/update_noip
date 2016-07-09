@@ -10,7 +10,7 @@ import sys
 import traceback
 
 try:
-    from settings import USERNAME, PASSWORD
+    import settings
 except ImportError:
     raise ImportError(
         'You must create a "settings.py" file based on "settings.example.py" ' +
@@ -20,7 +20,7 @@ except ImportError:
 KEEP_BROWSER_OPEN = False
 
 def go():
-    browser = webdriver.Chrome()
+    browser = webdriver.Chrome(settings.CHROMEDRIVER_PATH)
 
     def login():
         browser.get('https://www.noip.com/login')
@@ -33,10 +33,10 @@ def go():
         login_button = browser.find_element_by_css_selector('#clogs button')
         
         username_field.click()
-        username_field.send_keys(USERNAME)
+        username_field.send_keys(settings.USERNAME)
         
         password_field.click()
-        password_field.send_keys(PASSWORD)
+        password_field.send_keys(settings.PASSWORD)
         
         old_url = browser.current_url
         login_button.click()
