@@ -71,8 +71,8 @@ def go():
                     else:
                         raise
             
-            # NOTE: 3 seconds didn't seem to be enough time
-            update_hostname_button = WebDriverWait(browser, 6).until(
+            # NOTE: 3 and 6 seconds didn't seem to be enough time
+            update_hostname_button = WebDriverWait(browser, 9).until(
                 lambda _: click_modify_host_button(),
                 'Could not click "Modify Host" button.')
             
