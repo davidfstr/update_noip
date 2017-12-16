@@ -1,5 +1,8 @@
 # update_noip
 
+| **No longer maintained:** This project is no longer being maintained. |
+| ----------------------------------------------------------------------|
+
 Refreshes all your hostnames on [noip.com].
 
 If run regularly, no-ip won't nag you to update your hostnames every 30 days.
